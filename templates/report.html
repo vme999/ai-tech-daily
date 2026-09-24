@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$title · AI Tech Report</title>
+<meta name="description" content="$title">
+<meta property="og:type" content="article">
+<meta property="og:title" content="$title">
+<meta property="og:description" content="$title">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="$title">
+<meta name="twitter:description" content="$title">
+<script>
+(function () {
+  var key = 'ai-tech-report-theme';
+  var saved;
+  try { saved = localStorage.getItem(key); } catch (e) {}
+  var preference = saved === 'light' || saved === 'dark' ? saved : 'auto';
+  var systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+  var toggle;
+  function applyTheme() {
+    document.documentElement.dataset.theme = preference === 'auto'
+      ? (systemDark.matches ? 'dark' : 'light') : preference;
+    if (toggle) {
+      var label = document.documentElement.dataset.theme === 'dark' ? '切换到浅色模式' : '切换到深色模式';
+      toggle.setAttribute('aria-label', label);
+      toggle.title = label;
+    }
+  }
+  applyTheme();
+  systemDark.addEventListener('change', function () {
+    if (preference === 'auto') applyTheme();
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    toggle = document.getElementById('themeToggle');
+    applyTheme();
+    toggle.addEventListener('click', function () {
+      preference = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      try { localStorage.setItem(key, preference); } catch (e) {}
+      applyTheme();
+    });
+  });
+})();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --accent: #2563eb; --accent-soft: rgba(37, 99, 235, .10);
+    --text: #1f2937; --muted: #6b7280;
+    --bg: #ffffff; --border: #e5e7eb; --soft: #f3f4f6;
+    --backtop-bg: #1d4ed8; --backtop-hover: #1e40af; --backtop-fg: #ffffff;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --accent: #60a5fa; --accent-soft: rgba(96, 165, 250, .14);
+    --text: #d1d5db; --muted: #9ca3af;
+    --bg: #111827; --border: #40506a; --soft: #222d3d;
+    --backtop-bg: #60a5fa; --backtop-hover: #93c5fd; --backtop-fg: #111827;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      color-scheme: dark;
+      --accent: #60a5fa; --accent-soft: rgba(96, 165, 250, .14);
+      --text: #d1d5db; --muted: #9ca3af;
+      --bg: #111827; --border: #40506a; --soft: #222d3d;
+      --backtop-bg: #60a5fa; --backtop-hover: #93c5fd; --backtop-fg: #111827;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; color: var(--text); background: var(--bg);
+    font-size: 17px; line-height: 1.85;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .meta { color: var(--muted); font-size: 14px; }
+  .theme-toggle { position: absolute; top: 28px; right: 28px; z-index: 60; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--border); border-radius: 50%; background: var(--soft); color: var(--text); cursor: pointer; }
+  .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .theme-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .theme-toggle .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) .theme-toggle .icon-sun { display: block; }
+    :root:not([data-theme]) .theme-toggle .icon-moon { display: none; }
+  }
+
+  /* 顶部阅读进度条 */
+  .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 50; pointer-events: none; }
+  .progress-bar { height: 100%; width: 0; background: var(--accent); }
+
+  /* 布局：正文 900px，宽屏（≥1280px）右侧挂固定目录 */
+  .container { max-width: 956px; margin: 0 auto; padding: 36px 28px 88px; }
+  .toc-side { display: none; }
+  @media (min-width: 1280px) {
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 956px) 264px;
+      gap: 24px;
+      justify-content: center;
+    }
+    .toc-side {
+      display: block; align-self: start; position: sticky; top: 24px;
+      max-height: calc(100vh - 48px); overflow-y: auto; padding: 12px 8px 32px 0;
+    }
+    .toc-side:not(:has(a)) { display: none; }
+    details.toc { display: none; }
+  }
+
+  .topbar { margin-bottom: 26px; font-size: 14px; }
+
+  h1 { font-size: 32px; line-height: 1.4; margin: 10px 0 14px; }
+
+  /* 折叠目录（中窄屏） */
+  details.toc {
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 13px 18px; margin: 26px 0 10px; background: var(--soft);
+  }
+  details.toc summary { cursor: pointer; font-weight: 600; user-select: none; }
+  details.toc ul { padding-left: 4px; margin: 10px 0 4px; list-style: none; }
+  details.toc li { margin: 4px 0; }
+
+  /* 侧栏目录（宽屏），滚动时高亮当前小节 */
+  .toc-side .toc-title { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .08em; margin: 0 0 10px; }
+  .toc-side ul { list-style: none; margin: 0; padding: 0; }
+  .toc-side a {
+    display: block; padding: 5px 10px 5px 14px; border-left: 2px solid var(--border);
+    color: var(--muted); font-size: 13.5px; line-height: 1.55;
+    transition: color .15s, border-color .15s;
+  }
+  .toc-side a:hover { color: var(--accent); border-left-color: var(--accent); text-decoration: none; }
+  .toc-side a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+
+  /* 正文排版 */
+  .prose { overflow-wrap: break-word; }
+  .prose h2 { font-size: 24px; line-height: 1.45; margin: 52px 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); scroll-margin-top: 24px; }
+  .prose h3 { font-size: 19px; margin: 36px 0 14px; scroll-margin-top: 24px; }
+  .prose p { margin: 16px 0; }
+  .prose ul, .prose ol { padding-left: 26px; }
+  .prose li { margin: 8px 0; }
+  .prose li::marker { color: var(--muted); }
+  .prose a { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 30%, transparent); text-underline-offset: 3px; }
+  .prose a:hover { text-decoration-color: var(--accent); }
+  .prose blockquote {
+    margin: 18px 0; padding: 8px 18px; border-left: 3px solid var(--accent);
+    color: var(--muted); background: var(--soft); border-radius: 0 10px 10px 0;
+  }
+  .prose code { background: var(--soft); padding: 2px 7px; border-radius: 5px; font-size: .88em; }
+  .prose pre { background: var(--soft); padding: 16px 18px; border-radius: 10px; overflow-x: auto; font-size: 14px; line-height: 1.7; }
+  .prose pre code { padding: 0; background: none; font-size: inherit; }
+  .prose table { border-collapse: collapse; width: 100%; margin: 18px 0; font-size: 15px; }
+  .prose th, .prose td { border: 1px solid var(--border); padding: 9px 13px; text-align: left; }
+  .prose th { background: var(--soft); font-weight: 600; }
+  .prose img { max-width: 100%; border-radius: 10px; }
+  .prose hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* 上一篇 / 下一篇 */
+  .nav {
+    display: flex; justify-content: space-between; gap: 14px;
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+  }
+  .nav a {
+    display: inline-block; padding: 10px 16px; border: 1px solid var(--border);
+    border-radius: 10px; font-size: 14.5px; color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .nav a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+  .site-footer {
+    margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+    text-align: center;
+  }
+  .site-footer .footer-disclaimer {
+    margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7;
+  }
+
+  /* 回到顶部 */
+  .backtop {
+    position: fixed; right: 24px; bottom: 28px; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: 50%;
+    background: var(--backtop-bg); color: var(--backtop-fg);
+    cursor: pointer; box-shadow: 0 4px 16px rgba(0, 0, 0, .24); z-index: 40;
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity .2s, visibility .2s, transform .2s, background-color .15s;
+  }
+  .backtop.visible { opacity: 1; visibility: visible; transform: none; }
+  .backtop:hover { background: var(--backtop-hover); }
+  .backtop:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .backtop svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .backtop { transition: none; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="切换主题">
+  <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+</button>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<div class="layout">
+  <div class="container">
+    <nav class="topbar meta"><a href="../../index.html">← 返回首页</a></nav>
+    <header>
+      <p class="meta">$date_cn · $reading 分钟阅读</p>
+      <h1>$title</h1>
+    </header>
+    <details class="toc">
+      <summary>目录</summary>
+      $toc_html
+    </details>
+    <article class="prose">
+$body</article>
+    $nav_html
+    <footer class="site-footer">
+      <p class="footer-disclaimer">本网页内容均为自动化采集发布，未经人工核实，请注意甄别。</p>
+    </footer>
+  </div>
+  <aside class="toc-side" aria-label="页面目录">
+    <p class="toc-title">目录</p>
+    $toc_html
+  </aside>
+</div>
+<button class="backtop" id="backTop" type="button" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>
+</button>
+<script>
+(function () {
+  var bar = document.getElementById('progressBar');
+  var top = document.getElementById('backTop');
+  var doc = document.documentElement;
+
+  function onScroll() {
+    var max = doc.scrollHeight - doc.clientHeight;
+    var y = window.scrollY || doc.scrollTop;
+    bar.style.width = (max > 0 ? y / max * 100 : 0) + '%';
+    top.classList.toggle('visible', y > 600);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  top.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+
+  // 宽屏侧栏目录：滚动时高亮当前所在小节
+  var links = {};
+  document.querySelectorAll('.toc-side a').forEach(function (a) {
+    links[a.getAttribute('href').slice(1)] = a;
+  });
+  var heads = document.querySelectorAll('.prose h2[id]');
+  if ('IntersectionObserver' in window && heads.length) {
+    var active = null;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        if (active) active.classList.remove('active');
+        active = links[e.target.id];
+        if (active) active.classList.add('active');
+      });
+    }, { rootMargin: '-10% 0px -75% 0px' });
+    heads.forEach(function (h) { io.observe(h); });
+  }
+})();
+</script>
+</body>
+</html>

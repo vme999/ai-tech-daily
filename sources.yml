@@ -1,0 +1,24 @@
+# AI Tech Report 每期必查信源
+# 每次生成周报都逐项检查；清单之外仍按本周线索开放检索并访问一手来源。
+watch:
+  official:
+    - { name: OpenAI, url: https://openai.com/news/ }
+    - { name: Anthropic, url: https://www.anthropic.com/news }
+    - { name: Gemini, url: https://blog.google/products-and-platforms/products/gemini/ }
+    - { name: DeepSeek, url: https://www.deepseek.com/news/ }
+    - { name: Qwen models, url: https://huggingface.co/Qwen }
+    - { name: GLM models, url: https://huggingface.co/zai-org/models }
+    - { name: Kimi, url: https://www.kimi.com/en/blog/ }
+    - { name: Tencent Hunyuan models, url: https://huggingface.co/tencent/models }
+    - { name: Meta AI, url: https://ai.meta.com/blog/ }
+    - { name: xAI, url: https://x.ai/news }
+    - { name: NVIDIA, url: https://blogs.nvidia.com/ }
+    - { name: ByteDance Seed, url: https://seed.bytedance.com/en/research }
+    - { name: MiniMax, url: https://www.minimax.io/blog }
+    - { name: Mistral AI, url: https://mistral.ai/news/ }
+
+  discovery:
+    - { name: TechCrunch AI, url: https://techcrunch.com/category/artificial-intelligence/ }
+    - { name: Ars Technica AI, url: https://arstechnica.com/ai/ }
+    - { name: The Verge AI, url: https://www.theverge.com/ai-artificial-intelligence }
+    - { name: 量子位, url: https://www.qbitai.com/ }

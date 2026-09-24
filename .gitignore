@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# 构建产物（CI 中构建后部署，不入库）
+site/
+
+# 本地收集底稿，不提交或发布
+research/
+
+# 编辑器
+.idea/
